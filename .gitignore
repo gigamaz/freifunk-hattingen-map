@@ -1,0 +1,12 @@
+.planning/
+
+# Gluon Build-Artefakte
+gluon/output/
+gluon/openwrt/
+gluon/packages/
+*.ipk
+
+# Laufzeit-Daten (Yanic)
+yanicmap/state.json
+yanicmap/data/
+yanicmap/upload.log
