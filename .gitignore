@@ -10,3 +10,15 @@ gluon/packages/
 yanicmap/state.json
 yanicmap/data/
 yanicmap/upload.log
+
+# ECDSA-Signierschlüssel — DARF NICHT eingecheckt werden
+*.secret
+*.pem
+*.key
+secret
+
+# Editor-Artefakte
+.vscode/
+.idea/
+*.swp
+*~
