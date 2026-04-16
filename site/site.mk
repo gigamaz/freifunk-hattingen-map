@@ -30,7 +30,7 @@ GLUON_SITE_PACKAGES := \
 GLUON_RELEASE := 2023.2.5+ffhat1
 
 ## Autoupdater: Prozentsatz der Knoten, die pro Tag updaten (Rollout-Kontrolle)
-GLUON_PRIORITY := 0
+GLUON_PRIORITY := 1
 
 ## Targets, die mit diesem site.mk gebaut werden
 ## ath79-generic: TP-Link, Ubiquiti u.a. (Primär-Target)
