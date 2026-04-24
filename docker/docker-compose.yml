@@ -1,0 +1,28 @@
+services:
+  yanic:
+    build: .
+    container_name: yanic
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./yanic.toml:/app/yanic.toml:ro
+      - ./data:/data
+    logging:
+      driver: journald
+      options:
+        tag: yanic
+
+  mcast-join:
+    image: python:3.11-alpine
+    container_name: mcast-join
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./mcast_join.py:/app/mcast_join.py:ro
+    command: python3 /app/mcast_join.py
+    depends_on:
+      - yanic
+    logging:
+      driver: journald
+      options:
+        tag: mcast-join

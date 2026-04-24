@@ -1,0 +1,18 @@
+[Unit]
+Description=Yanic - Yet Another Node Info Collector (ffhat)
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/openclaw/freifunk/yanic/yanic serve --config /home/openclaw/freifunk/yanicmap/yanic.toml
+Restart=on-failure
+RestartSec=10s
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=yanic
+
+[Install]
+WantedBy=default.target

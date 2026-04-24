@@ -1,0 +1,69 @@
+# Yanic Konfiguration für Freifunk Hattingen (ffhat)
+# Docker-Setup auf ffcollector — Pfade: /data/ (Container-Volume)
+
+[respondd]
+enable           = true
+synchronize      = "1m"
+collect_interval = "1m"
+
+[respondd.sites.ffhat]
+domains = []
+
+# bat0 = Batman-adv Mesh-Interface (Tunneldigger-VPN)
+# Neuere Gluon-Knoten (ff05::2:1001 - Standard)
+[[respondd.interfaces]]
+ifname = "bat0"
+
+# Ältere Gluon-Knoten (ff02::2:1001)
+[[respondd.interfaces]]
+ifname            = "bat0"
+multicast_address = "ff02::2:1001"
+
+[webserver]
+enable  = false
+bind    = "127.0.0.1:8080"
+webroot = "/data"
+
+[nodes]
+state_path    = "/data/state.json"
+prune_after   = "30d"
+save_interval = "30s"
+offline_after = "10m"
+
+[[nodes.output.meshviewer-ffrgb]]
+enable = true
+path   = "/data/meshviewer.json"
+
+[nodes.output.meshviewer-ffrgb.filter]
+no_owner = false
+
+[[nodes.output.meshviewer]]
+enable     = true
+version    = 2
+nodes_path = "/data/nodes.json"
+graph_path = "/data/graph.json"
+
+[nodes.output.meshviewer.filter]
+no_owner = false
+
+[[nodes.output.nodelist]]
+enable = true
+path   = "/data/nodelist.json"
+
+[nodes.output.nodelist.filter]
+no_owner = false
+
+[[nodes.output.geojson]]
+enable = true
+path   = "/data/nodes.geojson"
+
+[database]
+delete_after    = "30d"
+delete_interval = "1h"
+
+[[database.connection.influxdb]]
+enable   = true
+address  = "http://localhost:8086"
+database = "freifunk"
+username = ""
+password = ""

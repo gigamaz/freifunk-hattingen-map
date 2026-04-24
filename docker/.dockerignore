@@ -1,0 +1,4 @@
+grafana-data/
+influxdb-data/
+graphs/
+*.log

@@ -1,0 +1,4 @@
+FROM python:3.11-alpine
+RUN pip install --no-cache-dir influxdb matplotlib
+WORKDIR /app
+CMD ["python3", "/app/generate_graphs.py"]

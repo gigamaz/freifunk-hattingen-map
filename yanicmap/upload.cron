@@ -1,0 +1,4 @@
+# Cron-Job: JSON-Dateien alle 5 Minuten zum Webserver hochladen
+# Einrichten mit: crontab -e  (folgende Zeile einfügen)
+#
+*/5 * * * * /home/openclaw/freifunk/upload_mesh.sh >> /home/openclaw/freifunk/yanicmap/upload.log 2>&1

@@ -20,8 +20,8 @@ Router-Besitzer können ein offizielles ffhat-Firmware-Image flashen und sich so
 
 ### Active
 
-- [ ] Gluon als Git-Submodul einbinden (v2023.2.5)
-- [ ] `site.conf` und `site.mk` für ffhat konfigurieren
+- [x] Gluon als Git-Submodul einbinden (v2023.2.5) — Validated in Phase 01: site-repo-gluon-setup
+- [x] `site.conf` und `site.mk` für ffhat konfigurieren — Validated in Phase 01: site-repo-gluon-setup
 - [ ] Build-Umgebung (Docker oder nativ) aufsetzen
 - [ ] Firmware für Primär-Targets bauen: `ath79`, `x86-64`
 - [ ] Autoupdater-Manifest und Signier-Workflow einrichten
@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-15 after initialization*
+*Last updated: 2026-04-16 — Phase 01 complete (Gluon-Submodul + site.conf/site.mk)*

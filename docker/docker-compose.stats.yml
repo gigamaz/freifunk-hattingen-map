@@ -1,0 +1,27 @@
+services:
+  # InfluxDB läuft bereits als System-Service auf localhost:8086 — kein Docker nötig
+
+  grafana:
+    image: grafana/grafana:11.6.0
+    container_name: grafana
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      GF_SERVER_HTTP_PORT: "3000"
+      GF_SECURITY_ADMIN_PASSWORD: "${GF_ADMIN_PASSWORD:-freifunk}"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+      - ./grafana-provisioning:/etc/grafana/provisioning
+
+  graph-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile.graphs
+    container_name: graph-generator
+    network_mode: host
+    profiles:
+      - cron
+    volumes:
+      - ./generate_graphs.py:/app/generate_graphs.py:ro
+      - ./graphs:/app/output

@@ -1,0 +1,74 @@
+# Yanic Konfiguration für Freifunk Hattingen (ffhat)
+# Pfade: /home/openclaw/freifunk/yanicmap/
+
+[respondd]
+enable           = true
+synchronize      = "1m"
+collect_interval = "1m"
+
+[respondd.sites.ffhat]
+domains = []
+
+# bat0 = Batman-adv Mesh-Interface (via l2tpeth0/Tunneldigger)
+# Neuere Gluon-Knoten (ff05::2:1001 - Standard)
+[[respondd.interfaces]]
+ifname = "bat0"
+
+# Ältere Gluon-Knoten (ff02::2:1001)
+[[respondd.interfaces]]
+ifname            = "bat0"
+multicast_address = "ff02::2:1001"
+
+[webserver]
+enable  = false
+bind    = "127.0.0.1:8080"
+webroot = "/home/openclaw/freifunk/yanicmap/data"
+
+[nodes]
+# Gecachte Node-Daten (wird beim Start geladen, nach Lauf aktualisiert)
+state_path    = "/home/openclaw/freifunk/yanicmap/state.json"
+# Knoten nach 30 Tagen Inaktivität entfernen
+prune_after   = "30d"
+# JSON-Dateien alle 30 Sekunden schreiben
+save_interval = "30s"
+# Knoten als offline markieren wenn > 10 Min nicht gesehen
+offline_after = "10m"
+
+# ------- Output-Formate -------
+
+# meshviewer.json (ffrgb-Format, für moderne Karten wie meshviewer-ffrgb)
+[[nodes.output.meshviewer-ffrgb]]
+enable = true
+path   = "/home/openclaw/freifunk/yanicmap/data/meshviewer.json"
+
+[nodes.output.meshviewer-ffrgb.filter]
+no_owner = false
+
+# nodes.json + graph.json (klassisches Format v2)
+[[nodes.output.meshviewer]]
+enable     = true
+version    = 2
+nodes_path = "/home/openclaw/freifunk/yanicmap/data/nodes.json"
+graph_path = "/home/openclaw/freifunk/yanicmap/data/graph.json"
+
+[nodes.output.meshviewer.filter]
+no_owner = false
+
+# nodelist.json (einfache Knotenliste)
+[[nodes.output.nodelist]]
+enable = true
+path   = "/home/openclaw/freifunk/yanicmap/data/nodelist.json"
+
+[nodes.output.nodelist.filter]
+no_owner = false
+
+# nodes.geojson (für GeoJSON-Karten)
+[[nodes.output.geojson]]
+enable = true
+path   = "/home/openclaw/freifunk/yanicmap/data/nodes.geojson"
+
+# ------- Datenbanken (alle deaktiviert) -------
+
+[database]
+delete_after    = "30d"
+delete_interval = "1h"
