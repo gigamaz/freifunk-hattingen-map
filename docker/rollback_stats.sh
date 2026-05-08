@@ -4,6 +4,10 @@
 
 set -e
 DOCKER_DIR="/home/marcus/ffmap/docker"
+FTP_HOST="${FTP_HOST:?Bitte FTP_HOST als Umgebungsvariable setzen}"
+FTP_USER="${FTP_USER:?Bitte FTP_USER als Umgebungsvariable setzen}"
+FTP_PASS="${FTP_PASS:?Bitte FTP_PASS als Umgebungsvariable setzen}"
+FTP_REMOTE_DIR="${FTP_REMOTE_DIR:-/freifunk/meshviewer}"
 
 echo "=== Rollback Stats-Stack ==="
 
@@ -19,14 +23,14 @@ crontab -l 2>/dev/null | grep -v generate_graphs | crontab - || true
 # 3. Meshviewer config.json wiederherstellen
 echo "[3/4] Stelle meshviewer config.json wieder her..."
 BACKUP=$(curl -s --ftp-ssl --insecure \
-    -u "hosting102099:kalisto334" \
-    "ftp://af991.netcup.net/freifunk/meshviewer/config.json.bak" 2>/dev/null)
+    -u "$FTP_USER:$FTP_PASS" \
+    "ftp://$FTP_HOST$FTP_REMOTE_DIR/config.json.bak" 2>/dev/null)
 if [ -n "$BACKUP" ]; then
     echo "$BACKUP" > /tmp/config.json.restored
     curl -s --ftp-ssl --insecure \
-        -u "hosting102099:kalisto334" \
+        -u "$FTP_USER:$FTP_PASS" \
         -T /tmp/config.json.restored \
-        "ftp://af991.netcup.net/freifunk/meshviewer/config.json"
+        "ftp://$FTP_HOST$FTP_REMOTE_DIR/config.json"
     echo "  config.json wiederhergestellt aus Backup."
 else
     echo "  WARNUNG: Kein Backup gefunden auf FTP."

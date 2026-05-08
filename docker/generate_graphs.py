@@ -21,10 +21,10 @@ INFLUX_HOST = "localhost"
 INFLUX_PORT = 8086
 INFLUX_DB   = "freifunk"
 
-FTP_HOST    = os.environ.get("FTP_HOST", "af991.netcup.net")
-FTP_USER    = os.environ.get("FTP_USER", "hosting102099")
-FTP_PASS    = os.environ.get("FTP_PASS", "")
-FTP_DIR     = "/freifunk/json/graphs"
+FTP_HOST    = os.environ["FTP_HOST"]
+FTP_USER    = os.environ["FTP_USER"]
+FTP_PASS    = os.environ["FTP_PASS"]
+FTP_DIR     = os.environ.get("FTP_DIR", "/freifunk/json/graphs")
 
 OUTPUT_DIR  = "/app/output"
 
