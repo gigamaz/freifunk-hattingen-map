@@ -1,17 +1,17 @@
 # Freifunk Hattingen Karte (Yanic + Meshviewer)
 
-Dieses Repository erzeugt die Datengrundlage fuer eine Freifunk-Karte:
+Dieses Repository erzeugt die Datengrundlage für eine Freifunk-Karte:
 
 - Yanic sammelt Respondd-Daten aus dem Mesh (Interface `bat0`)
-- Yanic schreibt JSON/GeoJSON-Dateien fuer Meshviewer
+- Yanic schreibt JSON/GeoJSON-Dateien für Meshviewer
 - Meshviewer zeigt diese Dateien als Karte und Knotenliste an
 
-Diese Anleitung fuehrt Schritt fuer Schritt zu einer funktionierenden Installation
+Diese Anleitung führt Schritt für Schritt zu einer funktionierenden Installation
 inklusive Erzeugung und Konfiguration von `bat0`.
 
 ## Zielbild
 
-Am Ende laeuft:
+Am Ende läuft:
 
 1. ein funktionierendes Batman-adv Interface `bat0`
 2. der Yanic-Stack per Docker
@@ -47,7 +47,7 @@ sudo modprobe batman-adv
 lsmod | grep batman_adv
 ```
 
-Falls keine Zeile erscheint, ist das Modul im Kernel nicht verfuegbar.
+Falls keine Zeile erscheint, ist das Modul im Kernel nicht verfügbar.
 
 ## 4) `bat0` erzeugen
 
@@ -66,7 +66,7 @@ sudo ip link set bat0 up
 ## 5) Tunneldigger-Client einrichten (erzeugt meist `l2tpeth0`)
 
 Wenn du noch kein Mesh-Uplink-Interface hast, richte zuerst Tunneldigger ein.
-Du brauchst dafuer von der Freifunk-Community:
+Du brauchst dafür von der Freifunk-Community:
 
 - Broker-Hostname oder IP
 - Broker-Port (oft `8942`)
@@ -100,17 +100,17 @@ sudo /opt/tunneldigger/venv/bin/python /opt/tunneldigger/client/l2tp_client.py \
   -u 1472
 ```
 
-Danach pruefen, ob `l2tpeth0` (oder ein anderes `l2tp*`) erscheint:
+Danach prüfen, ob `l2tpeth0` (oder ein anderes `l2tp*`) erscheint:
 
 ```bash
 ip -br link | grep l2tp
 ```
 
-Falls dein Setup einen Key braucht, den Startbefehl um `-k <DEIN_KEY>` ergaenzen.
+Falls dein Setup einen Key braucht, den Startbefehl um `-k <DEIN_KEY>` ergänzen.
 
 ## 6) Mesh-Transportinterface an `bat0` anbinden
 
-Du brauchst ein Layer-2 Interface, das ins Freifunk-Mesh zeigt (haeufig `l2tpeth0`,
+Du brauchst ein Layer-2 Interface, das ins Freifunk-Mesh zeigt (häufig `l2tpeth0`,
 manchmal auch `mesh-vpn0` oder ein VLAN-Interface wie `eth0.42`).
 
 Vorhandene Interfaces anzeigen:
@@ -129,9 +129,9 @@ sudo batctl meshif bat0 if
 
 Die letzte Ausgabe muss `l2tpeth0: active` zeigen.
 
-## 7) Multicast fuer Respondd auf `bat0` pruefen
+## 7) Multicast für Respondd auf `bat0` prüfen
 
-Yanic fragt Respondd ueber IPv6-Multicast ab. Pruefen:
+Yanic fragt Respondd über IPv6-Multicast ab. Prüfen:
 
 ```bash
 ip -6 maddr show dev bat0
@@ -160,7 +160,7 @@ docker compose -f docker/docker-compose.yml up -d
 docker compose -f docker/docker-compose.yml ps
 ```
 
-## 10) Logs und Funktion pruefen
+## 10) Logs und Funktion prüfen
 
 ```bash
 docker logs yanic --tail 100
@@ -170,7 +170,7 @@ ls -lah docker/data
 
 Funktioniert die Installation, dann werden unter `docker/data/` die JSON/GeoJSON-Dateien geschrieben.
 
-## 11) Autostart fuer `bat0` und Mesh-Interface einrichten (systemd)
+## 11) Autostart für `bat0` und Mesh-Interface einrichten (systemd)
 
 Wenn du Tunneldigger nutzt, zuerst den Client als Service einrichten, damit
 das Uplink-Interface vor `batman-setup.service` vorhanden ist.
@@ -201,7 +201,7 @@ sudo systemctl enable --now tunneldigger-client.service
 sudo systemctl status tunneldigger-client.service
 ```
 
-Wenn ein Key noetig ist, in `ExecStart` um `-k <DEIN_KEY>` erweitern.
+Wenn ein Key nötig ist, in `ExecStart` um `-k <DEIN_KEY>` erweitern.
 
 Damit `bat0` nach Reboot automatisch wiederhergestellt wird, Service-Datei anlegen:
 
@@ -238,18 +238,9 @@ sudo systemctl enable --now batman-setup.service
 sudo systemctl status batman-setup.service
 ```
 
-Wichtig: Wenn dein Uplink-Interface nicht `l2tpeth0` heisst, in der Unit-Datei ersetzen.
+Wichtig: Wenn dein Uplink-Interface nicht `l2tpeth0` heißt, in der Unit-Datei ersetzen.
 
-## 12) Optional: Monitoring mit Grafana
-
-```bash
-export GF_ADMIN_PASSWORD='BitteEinSicheresPasswortWaehlen'
-docker compose -f docker/docker-compose.stats.yml up -d
-```
-
-Grafana: `http://<server-ip>:3000`
-
-## 13) Betrieb im Alltag
+## 12) Betrieb im Alltag
 
 Update:
 
@@ -275,13 +266,12 @@ docker compose -f docker/docker-compose.yml ps
 
 ## Fehlerbehebung
 
-- `bat0` fehlt nach Reboot -> `batman-setup.service` Status pruefen.
+- `bat0` fehlt nach Reboot -> `batman-setup.service` Status prüfen.
 - `batctl ... if` zeigt kein `active` -> falsches/Down-Uplink-Interface.
 - `docker/data/` bleibt leer -> keine Respondd-Antworten im Mesh oder Multicast blockiert.
-- `mcast-join` startet nicht -> Container-Logs pruefen (`docker logs mcast-join`).
-- Grafana startet nicht -> `GF_ADMIN_PASSWORD` fehlt.
+- `mcast-join` startet nicht -> Container-Logs prüfen (`docker logs mcast-join`).
 
 ## Weitere Dokumente
 
 - `YANICMAP_DOKUMENTATION.md` (Architektur und Betrieb)
-- `DATEIANALYSE.md` (Dateiueberblick)
+- `DATEIANALYSE.md` (Dateiüberblick)
