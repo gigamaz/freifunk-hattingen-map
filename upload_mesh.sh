@@ -1,7 +1,7 @@
 #!/bin/bash
 
-HOST="af991.netcup.net"
-USER="hosting102099"
+HOST="xxxxxx.netcup.net"
+USER="saaasssfffasss
 PASS="${FTP_PASS:?Bitte FTP_PASS als Umgebungsvariable setzen}"
 
 LOCAL_DIR="/home/openclaw/freifunk/yanicmap/data"
