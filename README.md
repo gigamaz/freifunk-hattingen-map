@@ -267,6 +267,30 @@ scp docker/systemd/ffcollector-healthcheck.* marcus@ffcollector:/home/marcus/ffm
 ssh marcus@ffcollector "chmod +x /home/marcus/ffmap/docker/healthcheck_ffcollector.sh && sudo cp /home/marcus/ffmap/docker/systemd/ffcollector-healthcheck.* /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable --now ffcollector-healthcheck.timer"
 ```
 
+Alarm-Methodik (ohne Secrets):
+
+- Signalquellen im Check:
+  - `batctl if` muss `l2tp-hat: active` enthalten.
+  - `batctl n` muss mindestens einen Batman-Nachbarn liefern.
+  - `data/nodes.json` muss mindestens einen Online-Knoten enthalten.
+- Zustandsmodell:
+  - `OK`: alle Bedingungen erfuellt.
+  - `BAD`: mindestens eine Bedingung verletzt.
+  - Status wird in `docker/data/healthcheck_state` gespeichert (`last_status`, `fail_count`).
+- Entprellung (Flap-Schutz):
+  - Alarm erst nach `FAIL_THRESHOLD` aufeinanderfolgenden BAD-Laeufen.
+  - Standard ist `FAIL_THRESHOLD=2`.
+- Benachrichtigungslogik:
+  - Alert wird einmalig beim Uebergang `OK -> BAD` nach Schwellwert versendet.
+  - Recovery wird einmalig beim Uebergang `BAD -> OK` versendet.
+  - Keine Dauer-Spam-Nachrichten bei unveraendertem Zustand.
+- Kanaele:
+  - Telegram via Bot API (`sendMessage`).
+  - E-Mail via lokales `mail`/`mailx` (oder alternativ SMTP-Relay).
+- Logging:
+  - Service-Logs in `journalctl -u ffcollector-healthcheck.service`.
+  - Ereigniszeilen enthalten Prefix `FFCOLLECTOR ALERT` bzw. `FFCOLLECTOR OK`.
+
 Manueller Test auf `ffcollector`:
 
 ```bash
