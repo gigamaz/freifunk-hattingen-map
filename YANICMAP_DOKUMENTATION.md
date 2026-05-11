@@ -27,18 +27,16 @@ Dieses Teilprojekt liefert die Datengrundlage für eine visualisierte Karte alle
     - Meshviewer liest diese Dateien über HTTP vom Webspace.
    - Upload erfolgt aktuell per FTPS-Skript (`upload_mesh.sh` bzw. `docker/upload.sh`) im Cron-Intervall.
 
-## Betriebsmodi im Repository
-
-- Lokal/Systemd-orientiert:
-  - Konfiguration: `yanicmap/yanic.toml`
-  - Service-Unit: `yanicmap/yanic.service`
-  - Upload-Cron: `yanicmap/upload.cron`
+## Betriebsmodus im Produktivbetrieb
 
 - Docker-orientiert (ffcollector):
   - `docker/docker-compose.yml`
   - `docker/yanic.toml`
   - `docker/mcast_join.py`
   - Deployment-/Migrationsskripte unter `docker/`
+
+Hinweis: Die alte lokale `yanicmap/`-Variante ist nicht der aktuelle
+Produktivpfad und wird hier nicht mehr als Referenz empfohlen.
 
 ## Aktuelle Quellenlage (extern)
 

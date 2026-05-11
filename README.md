@@ -170,75 +170,76 @@ ls -lah docker/data
 
 Funktioniert die Installation, dann werden unter `docker/data/` die JSON/GeoJSON-Dateien geschrieben.
 
-## 11) Autostart für `bat0` und Mesh-Interface einrichten (systemd)
+## 11) Produktive systemd-Variante auf `ffcollector`
 
-Wenn du Tunneldigger nutzt, zuerst den Client als Service einrichten, damit
-das Uplink-Interface vor `batman-setup.service` vorhanden ist.
+Die produktive VM nutzt **nicht** `tunneldigger-client.service` und **nicht**
+`batman-setup.service`, sondern diese drei Units:
 
-```bash
-sudo tee /etc/systemd/system/tunneldigger-client.service >/dev/null <<'EOF'
+- `tunneldigger.service`
+- `batman-l2tp.service`
+- `freifunk-batman.service`
+
+Dabei ist das Uplink-Interface `l2tp-hat` (nicht `l2tpeth0`).
+
+`/etc/systemd/system/tunneldigger.service`:
+
+```ini
 [Unit]
-Description=Tunneldigger L2TP client
-After=network-online.target
-Wants=network-online.target
+Description=Tunneldigger Client
+After=network.target
 
 [Service]
 Type=simple
-ExecStart=/opt/tunneldigger/venv/bin/python /opt/tunneldigger/client/l2tp_client.py -b <BROKER_HOSTNAME_ODER_IP>:<BROKER_PORT> -i l2tp0 -a ffhat-collector -u 1472
+ExecStart=/home/marcus/tunneldigger/client/build/tunneldigger -f -u 98e6cfee-043b-4071-addb-19d658b83787 -i l2tp-hat -b broker1.ff-en.de:10180
 Restart=always
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-EOF
 ```
 
-Service aktivieren:
+`/etc/systemd/system/batman-l2tp.service`:
 
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable --now tunneldigger-client.service
-sudo systemctl status tunneldigger-client.service
-```
-
-Wenn ein Key nötig ist, in `ExecStart` um `-k <DEIN_KEY>` erweitern.
-
-Damit `bat0` nach Reboot automatisch wiederhergestellt wird, Service-Datei anlegen:
-
-```bash
-sudo tee /etc/systemd/system/batman-setup.service >/dev/null <<'EOF'
+```ini
 [Unit]
-Description=Setup batman-adv mesh interface
-After=network-online.target
-Wants=network-online.target
-After=tunneldigger-client.service
-Wants=tunneldigger-client.service
+Description=Add l2tp-hat to batman (wait for interface)
+After=tunneldigger.service
+Requires=tunneldigger.service
 
 [Service]
 Type=oneshot
-RemainAfterExit=yes
-ExecStart=/sbin/modprobe batman-adv
-ExecStart=/sbin/ip link add name bat0 type batadv
-ExecStart=/sbin/ip link set bat0 up
-ExecStart=/sbin/ip link set l2tpeth0 up
-ExecStart=/usr/sbin/batctl meshif bat0 if add l2tpeth0
-ExecStop=/usr/sbin/batctl meshif bat0 if del l2tpeth0
-ExecStop=/sbin/ip link del bat0
+ExecStart=/bin/bash -c 'for i in $(seq 1 20); do if ip link show l2tp-hat >/dev/null 2>&1; then ip link set l2tp-hat up; batctl if add l2tp-hat || true; ip link set bat0 up; exit 0; fi; sleep 1; done; exit 1'
 
 [Install]
 WantedBy=multi-user.target
-EOF
 ```
 
-Service aktivieren:
+`/etc/systemd/system/freifunk-batman.service`:
+
+```ini
+[Unit]
+Description=Ensure L2TP and batman interface are active
+After=network-online.target
+Wants=network-online.target
+PartOf=tunneldigger.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/ip link set l2tp-hat up
+ExecStart=/usr/sbin/batctl if add l2tp-hat
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Aktivieren/neu laden:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable --now batman-setup.service
-sudo systemctl status batman-setup.service
+sudo systemctl enable --now tunneldigger.service batman-l2tp.service freifunk-batman.service
+sudo systemctl restart batman-l2tp.service freifunk-batman.service
 ```
-
-Wichtig: Wenn dein Uplink-Interface nicht `l2tpeth0` heißt, in der Unit-Datei ersetzen.
 
 ## 12) Betrieb im Alltag
 
@@ -266,8 +267,8 @@ docker compose -f docker/docker-compose.yml ps
 
 ## Fehlerbehebung
 
-- `bat0` fehlt nach Reboot -> `batman-setup.service` Status prüfen.
-- `batctl ... if` zeigt kein `active` -> falsches/Down-Uplink-Interface.
+- `bat0` fehlt nach Reboot -> Status von `tunneldigger.service`, `batman-l2tp.service` und `freifunk-batman.service` prüfen.
+- `batctl if` zeigt kein `l2tp-hat: active` -> Tunnel/Uplink down oder Interface nicht an batman gebunden.
 - `docker/data/` bleibt leer -> keine Respondd-Antworten im Mesh oder Multicast blockiert.
 - `mcast-join` startet nicht -> Container-Logs prüfen (`docker logs mcast-join`).
 
