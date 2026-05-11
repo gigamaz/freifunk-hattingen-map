@@ -257,6 +257,24 @@ Stop:
 docker compose -f docker/docker-compose.yml down
 ```
 
+Health-Check (alle 5 Minuten, Telegram + Mail):
+
+```bash
+cp docker/healthcheck.env.example docker/healthcheck.env
+nano docker/healthcheck.env
+scp docker/healthcheck_ffcollector.sh marcus@ffcollector:/home/marcus/ffmap/docker/
+scp docker/systemd/ffcollector-healthcheck.* marcus@ffcollector:/home/marcus/ffmap/docker/systemd/
+ssh marcus@ffcollector "chmod +x /home/marcus/ffmap/docker/healthcheck_ffcollector.sh && sudo cp /home/marcus/ffmap/docker/systemd/ffcollector-healthcheck.* /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable --now ffcollector-healthcheck.timer"
+```
+
+Manueller Test auf `ffcollector`:
+
+```bash
+sudo /home/marcus/ffmap/docker/healthcheck_ffcollector.sh
+sudo journalctl -u ffcollector-healthcheck.service -n 50 --no-pager
+sudo systemctl list-timers ffcollector-healthcheck.timer
+```
+
 Schnellcheck:
 
 ```bash

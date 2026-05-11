@@ -1,0 +1,9 @@
+[Unit]
+Description=Freifunk ffcollector health check
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/home/marcus/ffmap/docker/healthcheck_ffcollector.sh
