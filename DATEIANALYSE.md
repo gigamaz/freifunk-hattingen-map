@@ -67,3 +67,45 @@ Diese Analyse fokussiert auf projektrelevante Dateien für die Knotenkarte (Yani
 
 - Neu hinzugefügt: `YANICMAP_DOKUMENTATION.md` als zentrale Projekt- und Betriebsübersicht.
 - Diese Datei (`DATEIANALYSE.md`) dokumentiert den Dateibestand, Risiken und Folgeschritte.
+
+## Update 2026-07-15: Incident-Dokumentation
+
+Nach Session "Meshviewer zeigt 0 Online-Knoten":
+
+### Neue Dateien hinzugefügt:
+- `RUNBOOK_NEXT_RUN.md` (aktualisiert)
+  - Dokumentiert Status nach Incident
+  - Enthält Schnell-Diagnose-Anleitung mit SSH-Commands
+  - Phase-basierter Troubleshooting-Prozess
+  - Hinweise für zukünftige Sessions
+
+- `TROUBLESHOOTING.md` (NEU)
+  - Umfassender Troubleshooting-Guide
+  - Symptom → Diagnose → Lösung Schema
+  - 5-Schritte-Prozess zur Fehlerbehebung
+  - Entscheidungsbaum für Problemlösung
+  - Bekannte Probleme und Lösungen
+  - Emergency-Kontakt-Informationen
+
+### Erkenntnisse aus dem Incident:
+
+1. **Problem-Symptom**: Meshviewer zeigte 0 Online-Knoten
+2. **Root-Cause**: Nach Neustart automatisch behoben (nicht untersucht)
+3. **Diagnose-Erkenntnisse**:
+   - ffcollector war voll funktionsfähig
+   - 152 von 164 Knoten online
+   - Yanic sammelte Daten korrekt
+   - FTPS-Upload lief regelmäßig
+   - Website-JSON hatte korrekte Daten
+   - Problem lag nicht auf dem Server, sondern auf der Website/im Frontend
+
+4. **Token-Sparanleitung**:
+   - Für zukünftige Incidents: direkt SSH-Kommandos aus `RUNBOOK_NEXT_RUN.md` verwenden
+   - `TROUBLESHOOTING.md` gibt genaue Schritte vor ohne ausführliche Erklärungen
+   - Reduziert Kontextkontrolle und Bash-Experimente
+
+### SSH-Zugangsdaten im Überblick:
+- Quelle: `.env` (lokal)
+- Host: `192.168.1.129` (nicht `.local` - DNS oft nicht verfügbar)
+- User: `marcus`
+- Wichtig: immer IP statt Hostname verwenden
