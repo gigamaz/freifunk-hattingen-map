@@ -9,6 +9,16 @@ Dieses Repository erzeugt die Datengrundlage für eine Freifunk-Karte:
 Diese Anleitung führt Schritt für Schritt zu einer funktionierenden Installation
 inklusive Erzeugung und Konfiguration von `bat0`.
 
+## 🚨 Schnelle Hilfe bei Problemen
+
+**Meshviewer zeigt 0 Online-Knoten?** → 👉 **[INCIDENT_RESPONSE.md](INCIDENT_RESPONSE.md)**
+
+Dort finden Sie schnelle Fehlerbehebung in **5-10 Minuten**.
+
+- **[MASSNAHMENPLAN.md](MASSNAHMENPLAN.md)** - Konkrete Schritte M1-M8
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Detaillierte Fehlersuche
+- **[RUNBOOK_NEXT_RUN.md](RUNBOOK_NEXT_RUN.md)** - Operatives Handbuch
+
 ## Zielbild
 
 Am Ende läuft:
@@ -278,8 +288,8 @@ Alarm-Methodik (ohne Secrets):
   - `BAD`: mindestens eine Bedingung verletzt.
   - Status wird in `docker/data/healthcheck_state` gespeichert (`last_status`, `fail_count`).
 - Entprellung (Flap-Schutz):
-  - Alarm erst nach `FAIL_THRESHOLD` aufeinanderfolgenden BAD-Laeufen.
-  - Standard ist `FAIL_THRESHOLD=2`.
+  - Alarm nach `FAIL_THRESHOLD` aufeinanderfolgenden BAD-Laeufen.
+  - Standard ist `FAIL_THRESHOLD=1`.
 - Benachrichtigungslogik:
   - Alert wird einmalig beim Uebergang `OK -> BAD` nach Schwellwert versendet.
   - Recovery wird einmalig beim Uebergang `BAD -> OK` versendet.
