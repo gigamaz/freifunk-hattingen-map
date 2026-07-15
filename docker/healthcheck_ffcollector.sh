@@ -16,7 +16,7 @@ HOSTNAME_SHORT="$(hostname -s 2>/dev/null || hostname)"
 HOST_IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
 NOW="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 
-FAIL_THRESHOLD="${FAIL_THRESHOLD:-2}"
+FAIL_THRESHOLD="${FAIL_THRESHOLD:-1}"
 ALERT_EMAIL_TO="${ALERT_EMAIL_TO:-}"
 ALERT_EMAIL_FROM="${ALERT_EMAIL_FROM:-ffcollector-monitor@localhost}"
 TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-}"
